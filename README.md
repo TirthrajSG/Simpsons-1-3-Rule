@@ -34,6 +34,13 @@
 git clone https://github.com/TirthrajSG/Simpsons-Integration-Rules.git
 ```
 
+- Change directory to `Simpsons-Integration-Rules`:
+```bash
+cd Simpsons-Integration-Rules
+```
+
+- Install dependencies:
+
 ```bash
 pip install -r requirements.txt
 ```

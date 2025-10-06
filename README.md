@@ -115,9 +115,7 @@ Simpsons-Integration-Rules/
 ## 🖼️ Preview
 
 > *Simpson’s Integration Simulator in action:*
-<p align="center">
-  <img src="imgs/cover.png" alt="App Preview" width="600">
-</p>
+![](imgs/cover.png)
 
 ---
 

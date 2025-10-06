@@ -1,0 +1,6 @@
+Pillow==10.4.0
+matplotlib==3.9.2
+numpy==2.1.1
+sympy==1.13.2
+markdown==3.7
+tkinterweb==3.25.8

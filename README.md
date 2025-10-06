@@ -29,15 +29,15 @@
 
 ## How to use?
 
--**Step 1:** Enter a function of x in the text box. You can use the buttons on right panel. For more info click `Help` button.
+- **Step 1:** Enter a function of x in the text box. You can use the buttons on right panel. For more info click `Help` button.
 
--**Step 2:** Input the values of a, b, n in the text boxes.
+- **Step 2:** Input the values of a, b, n in the text boxes.
 
--**Step 3:** Simplify the function using the `Simplify` button. These will simplify the integral and plot it.
+- **Step 3:** Simplify the function using the `Simplify` button. These will simplify the integral and plot it.
 
--**Step 4:** Finally, Evaluate the integral using `Evaluate` button to get actual integral, simpson's 1/3 and 3/8 integral.
+- **Step 4:** Finally, Evaluate the integral using `Evaluate` button to get actual integral, simpson's 1/3 and 3/8 integral.
 
--**Change Theme:** Change theme using the `Drop Down` Button on top right corner.
+- **Change Theme:** Change theme using the `Drop Down` Button on top right corner.
 
 ---
 

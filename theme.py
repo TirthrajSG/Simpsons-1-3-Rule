@@ -17,9 +17,9 @@ Themes = {
         "fg": "#657b83",
         "entry_bg": "#eee8d5",
         "entry_fg": "#657b83",
-        "btn_bg": "#93a1a1",
-        "btn_bg_2": "#839496",
-        "btn_active_bg": "#839496",
+        "btn_bg": "#B8E1E1",
+        "btn_bg_2": "#88E0EA",
+        "btn_active_bg": "#72A7AD",
         "plot_bg": "#eee8d5",
         "accent_color": "#268bd2" # Blue
     },
@@ -66,7 +66,7 @@ Themes = {
         "entry_bg": "#21252b",
         "entry_fg": "#abb2bf",
         "btn_bg": "#3e4451",
-        "btn_bg_2": "#528bff",
+        "btn_bg_2": "#2f446f",
         "btn_active_bg": "#528bff",
         "plot_bg": "#282c34",
         "accent_color": "#61afef" # Light Blue
@@ -174,7 +174,7 @@ Themes = {
         "entry_bg": "#ffffff",
         "entry_fg": "#5e548e",
         "btn_bg": "#e0b1cb",
-        "btn_bg_2": "#9f86c0",
+        "btn_bg_2": "#c0a8e0",
         "btn_active_bg": "#9f86c0",
         "plot_bg": "#f3e6e8",
         "accent_color": "#be95c4" # Lilac

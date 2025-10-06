@@ -211,7 +211,7 @@ class App:
                             )
         self.b.pack(side=LEFT, padx=5, pady=5)
 
-        self.n_lbl = Label(self.abn_frame, text=" in h = ",bg=self.theme["bg"],
+        self.n_lbl = Label(self.abn_frame, text=" in n = ",bg=self.theme["bg"],
                             fg=self.theme["fg"],
                             font=("Consolas", 20)     
                         )
@@ -669,6 +669,8 @@ class App:
         self.expression.delete(0, END)
 
         self.plot.config(image="")   
+        self.plot1.config(image="")   
+        self.plot1.config(text="Plot of ∫f(x)dx")   
         self.actual_lbl.config(image="")   
         self.simplify_lbl.config(image="")   
         self.simpsons_lbl.config(image="")

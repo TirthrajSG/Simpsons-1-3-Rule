@@ -22,7 +22,7 @@ from sympy.parsing.sympy_parser import (
 class App:
     def __init__(self, master):
         self.master = master
-        self.master.title("Simpsons 1/3 rule simulator")
+        self.master.title("Simpsons 1/3 and 3/8 rule simulator")
         self.master.geometry("700x500")
         self.master.state('zoomed')
         
@@ -34,6 +34,8 @@ class App:
         # self.master.iconbitmap("imgs/icon.ico")
 
         # Variables
+        self.simplified = False
+        self.evaluated = False
         self.history = []
         self.frm_master = []
         self.btns_master = []
@@ -152,7 +154,7 @@ class App:
         self.title = Frame(self.main_frame, bg=self.theme["btn_bg_2"])
         self.title.pack(fill=X)
 
-        self.title_lbl = Label(self.title, text="Simspson's 1/3 Rule Simulation"
+        self.title_lbl = Label(self.title, text="Simpsons 1/3 and 3/8 rule simulator"
                                , bg=self.theme["btn_bg_2"], fg=self.theme["fg"],font=("Consolas", 25, "bold"))
         self.title_lbl.pack()
 
@@ -242,7 +244,11 @@ class App:
         self.plot_frame = Frame(self.plot_grid, bg=self.theme["btn_bg_2"])
         self.plot_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.plot = Label(self.plot_frame, text="Plot of f(x)", font=("Consolas", 25)
+        self.plot1 = Label(self.plot_frame, text="Plot of ∫f(x)dx", font=("Consolas", 15)
+                          ,bg=self.theme["bg"], fg=self.theme["fg"])
+        self.plot1.pack(fill=X, padx=3, pady=(3,0))
+
+        self.plot = Label(self.plot_frame, font=("Consolas", 25)
                           ,bg=self.theme["bg"], fg=self.theme["fg"])
         self.plot.pack(fill=BOTH, expand=True, padx=3, pady=3)
         # self.plot.pack_propagate(False)
@@ -251,38 +257,56 @@ class App:
         self.sol_frm.grid(row=0, column=1, padx=10, pady=10, sticky="nsew")
         # self.sol_frm.pack_propagate(False)
 
-        self.simplify_lbl = Label(self.sol_frm, text="Simplified f(x)", 
-                                  wraplength=300,font=("Consolas", 25), bg=self.theme["bg"],
+        
+        self.actual_lbl1 = Label(self.sol_frm, text="Actual Value of Integral", 
+                                wraplength=300,font=("Consolas", 15), bg=self.theme["bg"],
                                   fg=self.theme["fg"])
-        self.simplify_lbl.pack(fill=BOTH,expand=1,padx=3, pady=3)
+        self.actual_lbl1.pack(fill=X,padx=3, pady=(3,0))
 
-        self.actual_lbl = Label(self.sol_frm, text="Actual Value of Integral", 
+        self.actual_lbl = Label(self.sol_frm, 
                                 wraplength=300,font=("Consolas", 25), bg=self.theme["bg"],
                                   fg=self.theme["fg"])
         self.actual_lbl.pack(fill=BOTH,expand=1,padx=3, pady=3)
+        self.simpsons_lbl1 = Label(self.sol_frm, text="Simpson's 1/3 Value of Integral", 
+                                  wraplength=350,font=("Consolas", 15), bg=self.theme["bg"],
+                                  fg=self.theme["fg"])
+        self.simpsons_lbl1.pack(fill=X,padx=3, pady=0)
 
-        self.simpsons_lbl = Label(self.sol_frm, text="Simpson's Value of Integral", 
+        self.simpsons_lbl = Label(self.sol_frm, 
                                   wraplength=300,font=("Consolas", 25), bg=self.theme["bg"],
                                   fg=self.theme["fg"])
         self.simpsons_lbl.pack(fill=BOTH,expand=1,padx=3, pady=3)
 
+        self.simplify_lbl1 = Label(self.sol_frm, text="Simpson's 3/8 Value of Integral", 
+                                  wraplength=350,font=("Consolas", 15), bg=self.theme["bg"],
+                                  fg=self.theme["fg"])
+        self.simplify_lbl1.pack(fill=X,padx=3, pady=0)
+
+        self.simplify_lbl = Label(self.sol_frm, 
+                                  wraplength=300,font=("Consolas", 25), bg=self.theme["bg"],
+                                  fg=self.theme["fg"])
+        self.simplify_lbl.pack(fill=BOTH,expand=1,padx=3, pady=3)
+
+
 
         self.entry_master += [self.expression, self.a,self.b, self.n] + [self.plot]
         self.lbl_master += [self.exp_lbl, self.a_lbl, self.simplify_lbl,self.actual_lbl,self.simpsons_lbl,
-                            self.b_lbl, self.n_lbl, self.nn_lbl, self.plot] 
+                            self.b_lbl, self.n_lbl, self.nn_lbl, self.plot, self.plot1,
+                            self.simplify_lbl1,self.actual_lbl1,self.simpsons_lbl1] 
         self.frm_master += [self.master,self.main_frame,self.exp_frame,self.plot_grid,
                             self.abn_frame,self.right_window, self.btn_frame,
-                            self.btn_canvas,self.scrl_btn_frame, self.sol_frm]
+                            self.btn_canvas,self.scrl_btn_frame]
 
 
     def change_theme_widgets(self):
-        self.eval_expr()
-        self.simp_expr()
+        if self.evaluated: self.eval_expr()
+        if self.simplified: self.simp_expr()
         for frm in self.frm_master:
             frm.configure(bg=self.theme['bg'])
         
         self.title.config(bg=self.theme['btn_bg_2'])
         self.plot_frame.config(bg=self.theme['btn_bg_2'])
+        self.sol_frm.config(bg=self.theme['btn_bg_2'])
         self.right_window_border.config(bg=self.theme['btn_bg_2'])
 
         self.theme_menu.config(
@@ -410,7 +434,7 @@ class App:
             if not self.expr.free_symbols:
                 self.expr = self.expr.evalf()
 
-            latex_str = f"$\\int_{{a}}^{{b}}f(x) = {sp.latex(self.expr)} + c$"
+            latex_str = f"$\\text{{Plot of }} \\int_{{a}}^{{b}}f(x) = {sp.latex(self.expr)} + c$"
             
             fig, ax = plt.subplots()
             ax.text(0.5,0.5, latex_str, fontsize=15, ha='center', va='center', color=self.theme["fg"])
@@ -424,10 +448,11 @@ class App:
             latex_img = Image.open(buf)
             latex_img = latex_img.crop(latex_img.getbbox())
             photo = ImageTk.PhotoImage(latex_img)
-            self.simplify_lbl.config(text="", image=photo)
-            self.simplify_lbl.image = photo
+            self.plot1.config(text="", image=photo)
+            self.plot1.image = photo
 
         except Exception as e:
+            self.expr = ""
             messagebox.showerror("Error", f"Invalid function:\n{e}")
         
         try:
@@ -481,10 +506,12 @@ class App:
             photo = ImageTk.PhotoImage(img)
             self.plot.config(text="",image=photo)
             self.plot.image = photo
+            self.simplified = True
         except Exception as e:
             messagebox.showerror("Plotting Error", f"An error occurred while plotting:\n{e}")
 
     def eval_expr(self): 
+        if not hasattr(self, "expr"): messagebox.showerror("Simplify", f"Simplify the function first:") ;return
         try: self.simp_expr() 
         except Exception as e: return
         try:
@@ -527,8 +554,8 @@ class App:
             self.actual_lbl.config(text="", image=photo)
             self.actual_lbl.image = photo
 
-            SIMPSONS = self.simpsons()
-            latex_str = f"$\\int_{{{round(a,2):.2f}}}^{{{round(b,2):.2f}}} f(x) \\approx {round(SIMPSONS,2):.2f}$"
+            SIMPSONS1 = self.simpsons1()
+            latex_str = f"$\\int_{{{round(a,2):.2f}}}^{{{round(b,2):.2f}}} f(x) \\approx {round(SIMPSONS1,2):.2f}$"
 
             fig, ax = plt.subplots()
             ax.text(0.5,0.5, latex_str, fontsize=15, ha='center', va='center', color=self.theme["fg"])
@@ -545,18 +572,74 @@ class App:
             self.simpsons_lbl.config(text="", image=photo)
             self.simpsons_lbl.image = photo
 
+            SIMPSONS3 = self.simpsons3()
+            latex_str = f"$\\int_{{{round(a,2):.2f}}}^{{{round(b,2):.2f}}} f(x) \\approx {round(SIMPSONS3,2):.2f}$"
+
+            fig, ax = plt.subplots()
+            ax.text(0.5,0.5, latex_str, fontsize=15, ha='center', va='center', color=self.theme["fg"])
+            ax.axis('off')
+            plt.subplots_adjust(left=0, right=1, top=1, bottom=0)
+            buf = BytesIO()
+            plt.savefig(buf, format='png',transparent=True, dpi=100, bbox_inches='tight', pad_inches=0)
+            plt.close(fig)
+            buf.seek(0)
+
+            latex_img = Image.open(buf)
+            latex_img = latex_img.crop(latex_img.getbbox())
+            photo = ImageTk.PhotoImage(latex_img)
+            self.simplify_lbl.config(text="", image=photo)
+            self.simplify_lbl.image = photo
+
+            self.evaluated = True
+
 
 
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while solving:\n{e}")
 
-
-    def simpsons(self):
+    def simpsons3(self):
         n = int(self.n_val.get())
         a_val = float(self.a_val.get())
         b_val = float(self.b_val.get())
 
-        # Simpson's rule requires even n
+        # Simpson's 3/8 rule requires n to be a multiple of 3
+        if n % 3 != 0:
+            n += 3 - (n % 3)
+            self.n_val.set(str(n))
+        # Simpson's 1/3 rule requires n to be even
+        if n % 2 == 1:
+            self.n_val.set(str(n+1))
+            n += 1
+
+        x = sp.symbols('x')
+        expr = self.expr
+
+        def y(val):
+            return expr.subs(x, val).evalf()
+
+        h = (b_val - a_val) / n
+        sum_ = y(a_val) + y(b_val)
+
+        for i in range(1, n):
+            xi = a_val + i * h
+            # Coefficients: 3 for non-multiples of 3, 2 for multiples of 3
+            weight = 3 if i % 3 != 0 else 2
+            sum_ += weight * y(xi)
+
+        integral = (3 * h / 8) * sum_
+        return integral
+
+    
+    def simpsons1(self):
+        n = int(self.n_val.get())
+        a_val = float(self.a_val.get())
+        b_val = float(self.b_val.get())
+
+        # Simpson's 3/8 rule requires n to be a multiple of 3
+        if n % 3 != 0:
+            n += 3 - (n % 3)
+            self.n_val.set(str(n))
+        # Simpson's 1/3 rule requires n to be even
         if n % 2 == 1:
             self.n_val.set(str(n+1))
             n += 1
@@ -580,11 +663,24 @@ class App:
 
     def nPr(self, n, r):
         return factorial(n) / factorial(n - r)
+    
+    def clear(self):
+        self.history.append(self.expression.get())
+        self.expression.delete(0, END)
+
+        self.plot.config(image="")   
+        self.actual_lbl.config(image="")   
+        self.simplify_lbl.config(image="")   
+        self.simpsons_lbl.config(image="")
+
+        self.evaluated = False
+        self.simplified = False
 
     def btn_clicked(self, k):
         if k == "Evaluate": self.eval_expr();return
         elif k == "Simplify": self.simp_expr();return
         elif k == "Undo": self.undo(); return
+        elif k == "Clear": self.clear(); return
         
         i = 1
         add = k
@@ -604,10 +700,7 @@ class App:
         elif k == "diff()": add="diff(f(x), x)"; i=4
         elif k == "limit()": add = "limit(f(x), x, a)";i=7
         elif k == "integ()": add="integrate(f(x), (x, a, b))"; i=12
-        elif k == "Clear": 
-            self.history.append(self.expression.get())
-            self.expression.delete(0, END)
-            return
+
         
         self.expression.insert(INSERT, add)
         if "(" in k and k.endswith(")"): 

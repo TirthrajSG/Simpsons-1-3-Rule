@@ -5,21 +5,21 @@ It provides an interactive interface for entering mathematical expressions, simp
 
 ---
 
-## ✨ Features
+## Features
 
-- 🧮 **Evaluate mathematical expressions** involving `x`
-- 📐 **Compute definite integrals** using:
+- **Evaluate mathematical expressions** involving `x`
+- **Compute definite integrals** using:
   - Simpson’s **1/3 Rule**
   - Simpson’s **3/8 Rule**
-- 📊 **Visualize** functions and integral approximations
-- 🔤 **Simplify expressions** and view them in **LaTeX** format
-- 🎨 **Multiple themes** for a personalized look
-- ⚙️ **Interactive buttons** for common math operations and functions
-- ↩️ **Undo / Clear** support for easy correction
+- **Visualize** functions and integral approximations
+- **Simplify expressions** and view them in **LaTeX** format
+- **Multiple themes** for a personalized look
+- **Interactive buttons** for common math operations and functions
+-  **Undo / Clear** support for easy correction
 
 ---
 
-## 🧠 Supported Functions
+## Supported Functions
 
 | Category | Supported Syntax |
 |-----------|------------------|
@@ -32,7 +32,7 @@ It provides an interactive interface for entering mathematical expressions, simp
 
 ---
 
-## 🚀 How to Use
+## How to Use
 
 1. **Enter a function** of `x` in the input box.  
    Use the on-screen buttons for operators and functions. (See `Help` for examples.)
@@ -55,13 +55,13 @@ It provides an interactive interface for entering mathematical expressions, simp
 5. **Improve accuracy** by increasing `n`.
 
 6. **Other options:**
-   - 🔄 `Undo`: Revert the last expression edit.  
-   - 🧹 `Clear`: Reset graphs and text boxes.  
-   - 🎨 `Theme`: Switch between available color themes (top-right dropdown).
+   - `Undo`: Revert the last expression edit.  
+   - `Clear`: Reset graphs and text boxes.  
+   - `Theme`: Switch between available color themes (top-right dropdown).
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 ### 1. Clone the repository
 ```bash
@@ -86,20 +86,20 @@ python main.py
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 ```
 Simpsons-Integration-Rules/
-├── main.py                 # Main Tkinter application
-├── theme.py                # Theme definitions
-├── imgs/                   # Icons and cover images
-├── help.md                 # Markdown help page
+├── main.py                
+├── theme.py               
+├── imgs/                  
+├── help.md                
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 🧩 Dependencies
+## Dependencies
 
 | Package | Purpose |
 |----------|----------|
@@ -112,9 +112,9 @@ Simpsons-Integration-Rules/
 
 ---
 
-## 🖼️ Preview
+## Preview
 
-> *Simpson’s Integration Simulator in action:*
+#### *Simpson’s Integration Simulator in action:*
 ![](imgs/cover.png)
 
 ---
@@ -122,5 +122,6 @@ Simpsons-Integration-Rules/
 ## 🧑‍💻 Author
 
 **Tirthraj S. Girawale**  
-📍 B.Stat. (Hons.), ISI Kolkata  
-🔗 [GitHub Profile](https://github.com/TirthrajSG)
+B.Stat. (Hons.), ISI Kolkata  
+
+---

@@ -123,6 +123,6 @@ Simpsons-Integration-Rules/
 
 ## 🧑‍💻 Author
 
-**Tirthraj S. Ghosh**  
+**Tirthraj S. Girawale**  
 📍 B.Stat. (Hons.), ISI Kolkata  
 🔗 [GitHub Profile](https://github.com/TirthrajSG)

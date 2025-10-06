@@ -51,5 +51,5 @@ pip install pillow matplotlib numpy sympy markdown tkinterweb
 
 - Run the application:
 ```bash
-python .\\main.py
+python .\main.py
 ```

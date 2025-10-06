@@ -1,6 +1,6 @@
-# Simpson's 1/3 Rule Simulator
+# Simpson's Integration Simulator
 
-**Simpson's 1/3 Rule Simulator** is a Python GUI application built with **Tkinter**. It allows users to input mathematical functions, calculate definite integrals using Simpson’s 1/3 rule, and visualize both the exact and approximate integral values. The app supports function plotting, expression simplification, and customizable themes.
+**Simpson's Integration Simulator** is a Python GUI application built with **Tkinter**. It allows users to input mathematical functions, calculate definite integrals using Simpson’s 1/3 rule and Simpson's 3/8 rule and visualize both the exact and approximate integral values. The app supports function plotting, expression simplification, and customizable themes.
 
 ---
 
@@ -8,9 +8,9 @@
 
 - Enter mathematical expressions involving `x`.
 - Calculate definite integrals using Simpson's 1/3 rule.
-- Plot 1D functions with a clean, customizable interface.
+- Calculate definite integrals using Simpson's 3/8 rule.
+- Plot functions with a clean, customizable interface.
 - View simplified expressions in LaTeX format.
-- Undo and clear input functions.
 - Theme support for different color schemes.
 - Interactive buttons for common functions and operations.
 
@@ -28,6 +28,11 @@
 ---
 
 ## Installation
+
+- Clone the Application:
+```bash
+git clone https://github.com/TirthrajSG/Simpsons-Integration-Rules.git
+```
 
 ```bash
 pip install -r requirements.txt

@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 from tkinterweb import HtmlFrame
+
 from theme import Themes
 
 from PIL import Image, ImageTk
@@ -31,7 +32,7 @@ class App:
         self.master.configure(bg=self.theme['bg'])
         self.master.rowconfigure(0, weight=1)
         self.master.columnconfigure(0, weight=1)
-        # self.master.iconbitmap("imgs/icon.ico")
+        self.master.iconbitmap("imgs/icon.ico")
 
         # Variables
         self.simplified = False
@@ -703,7 +704,68 @@ class App:
         self.simplified = False
 
     def help(self):
-        pass
+        help_win = Toplevel(self.master)
+        help_win.title("Help - Simpsons Simulator")
+        sc_width = self.master.winfo_screenwidth()
+        sc_height = self.master.winfo_screenheight()
+        width = 900
+        height = 600
+        help_win.geometry(f"{width}x{height}+{(sc_width-width)//2}+{(sc_height-height)//2}")
+        help_win.config(bg=self.theme['btn_bg_2'], padx=10, pady=10)
+
+
+        with open("help.md", "r", encoding="utf-8") as f:
+            md_content = f.read()
+
+        html_content = markdown.markdown(md_content, extensions=['fenced_code', 'tables'])
+
+        # Inject CSS for theming
+        css = f"""
+        <style>
+            body {{
+                background-color: {self.theme['bg']};
+                color: {self.theme['fg']};
+                font-family: Consolas, monospace;
+                padding: 10px;
+            }}
+            h1, h2, h3 {{
+                color: {self.theme['accent_color']};
+            }}
+            table {{
+                border-collapse: collapse;
+                width: 100%;
+            }}
+            th, td {{
+                border: 1px solid {self.theme['fg']};
+                padding: 6px;
+                text-align: left;
+            }}
+            hr {{
+                border: 1px dashed {self.theme['btn_bg']};
+            }}
+            code {{
+                background-color: {self.theme['btn_bg']};
+                padding: 2px 4px;
+                border-radius: 3px;
+                color: {self.theme['fg']};
+            }}
+            pre {{
+                background-color: {self.theme['btn_bg']};
+                padding: 10px;
+                border-radius: 5px;
+                overflow-x: auto;
+                color: {self.theme['fg']};
+            }}
+        </style>
+        """
+
+        html_content = f"<html><head>{css}</head><body>{html_content}</body></html>"
+
+        frame = HtmlFrame(help_win, messages_enabled=False, horizontal_scrollbar="auto", vertical_scrollbar="false")
+        frame.pack(fill=BOTH, expand=1)
+        frame.load_html(html_content)
+
+
 
     def btn_clicked(self, k):
         if k == "Evaluate": self.eval_expr();return

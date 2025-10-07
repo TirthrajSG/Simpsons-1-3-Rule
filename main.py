@@ -42,7 +42,21 @@ class App:
         self.btns_master_2 = []
         self.entry_master = []
         self.lbl_master = []
-
+        self.local_dict = {
+                'ceil': sp.ceiling,
+                'nPr': self.nPr,
+                'nCr':sp.binomial,
+                'e': sp.E,           
+                'π': sp.pi,
+                'sin': sp.sin,
+                'cos': sp.cos,
+                'tan': sp.tan,
+                'cot': sp.cot,
+                'sec': sp.sec,
+                'csc': sp.csc,
+                'ln': sp.ln,
+                'sqrt': sp.sqrt
+            }
         
 
         # Main Frame <- Master
@@ -142,12 +156,11 @@ class App:
         self.scrl_btn_frame.bind("<Leave>", lambda e: self._unbind_mousewheel())
 
         self.button_layout=[
-            'x', 'e', 'π',
+            'Help','x', 'e', 'π',
             'a**2', 'a**b', 'sqrt()', 'root()', 'ln()', 'log()',
             'sin()', 'cos()', 'tan()', 'csc()', 'sec()','cot()',
             'asin()', 'acos()', 'atan()', 'acsc()', 'asec()','acot()',
-            'lcm()', 'gcd()', 'abs()', 'ceil()', 'floor()','round()',
-            'sign()', 'Sum()', 'Prod()', 'diff()', 'limit()', 'integ()',
+            'abs()', 'Sum()', 'Prod()', 'diff()', 'limit()', 'integ()'
         ]
         self.add_buttons()
 
@@ -172,6 +185,8 @@ class App:
                                fg=self.theme["entry_fg"],
                                font=("Consolas", 23),
                             )
+        self.expression.bind("<Key>", self.record_history)
+        self.expression.focus_set()
         self.expression.pack(side=LEFT,expan=True, fill=X, padx=5, pady=5)
 
         self.abn_frame = Frame(self.main_frame, bg=self.theme["bg"])
@@ -238,13 +253,13 @@ class App:
         self.plot_grid.pack(fill=BOTH, expand=TRUE)
 
         self.plot_grid.rowconfigure(0, weight=1)
-        self.plot_grid.columnconfigure(0, weight=1)
+        self.plot_grid.columnconfigure(0, weight=1)  
         self.plot_grid.columnconfigure(1, weight=1)
 
         self.plot_frame = Frame(self.plot_grid, bg=self.theme["btn_bg_2"])
         self.plot_frame.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        self.plot1 = Label(self.plot_frame, text="Plot of ∫f(x)dx", font=("Consolas", 15)
+        self.plot1 = Label(self.plot_frame, text="Plot of f(x)dx", font=("Consolas", 15)
                           ,bg=self.theme["bg"], fg=self.theme["fg"])
         self.plot1.pack(fill=X, padx=3, pady=(3,0))
 
@@ -408,33 +423,23 @@ class App:
         widget.bind("<Enter>", lambda e: self.btn_canvas.bind_all("<MouseWheel>", self._on_mousewheel))
         widget.bind("<Leave>", lambda e: self.btn_canvas.unbind_all("<MouseWheel>"))
 
-    def undo(self): pass
+    def undo(self):
+        if self.history:
+            last_state = self.history.pop()
+            self.expression.delete(0, END)
+            self.expression.insert(0, last_state)
     def simp_expr(self): 
-        expr_str = f"integrate({self.expression.get()},x)"
+        expr_str = self.expression.get()
         try:
             transformations = standard_transformations + (implicit_multiplication_application,)
-            local_dict = {
-                'ceil': sp.ceiling,
-                'nPr': self.nPr,
-                'nCr':sp.binomial,
-                'e': sp.E,           
-                'π': sp.pi,
-                'sin': sp.sin,
-                'cos': sp.cos,
-                'tan': sp.tan,
-                'cot': sp.cot,
-                'sec': sp.sec,
-                'csc': sp.csc,
-                'ln': sp.ln,
-                'sqrt': sp.sqrt
-            }
-            self.expr = parse_expr(expr_str, transformations=transformations, local_dict=local_dict)
+            
+            self.expr = parse_expr(expr_str, transformations=transformations, local_dict=self.local_dict)
             self.expr = sp.sympify(self.expr)
 
             if not self.expr.free_symbols:
                 self.expr = self.expr.evalf()
 
-            latex_str = f"$\\text{{Plot of }} \\int_{{a}}^{{b}}f(x) = {sp.latex(self.expr)} + c$"
+            latex_str = f"$\\text{{Plot of }} f(x) = {sp.latex(self.expr)}$"
             
             fig, ax = plt.subplots()
             ax.text(0.5,0.5, latex_str, fontsize=15, ha='center', va='center', color=self.theme["fg"])
@@ -457,6 +462,7 @@ class App:
         
         try:
             a, b = float(self.a_val.get()), float(self.b_val.get())
+            a,b = sorted([a,b])
             nn = 500
             if not hasattr(self, 'expr'):
                 return
@@ -465,79 +471,78 @@ class App:
             
             variable = expr.free_symbols
             
-            fig, ax = plt.subplots(facecolor=self.theme["plot_bg"])
-            ax.set_facecolor(self.theme["plot_bg"])
-            
-            if not variable: # Constant
-                X = np.linspace(a, b, nn)
-                Y = [float(expr)] * nn
-                ax.plot(X, Y, color=self.theme["accent_color"])
-            
-            elif variable=={x}: # 1D plot
-                f = sp.lambdify(x, expr, 'numpy')
-                X = np.linspace(a, b, nn)
-                Y = f(X)
-                ax.plot(X, Y, color=self.theme["accent_color"])
-            else:
-                messagebox.showinfo("Info", "Plotting only supported for expressions with x or x and y.")
+            try:
+                fig, ax = plt.subplots(facecolor=self.theme["plot_bg"])
+                ax.set_facecolor(self.theme["plot_bg"])
+                
+                if not variable: # Constant
+                    X = np.linspace(max(1e-12,a), b, nn)
+                    Y = [float(expr)] * nn
+                    ax.plot(X, Y, color=self.theme["accent_color"])
+                    ax.fill_between(X, Y, color=self.theme['accent_color'], alpha=0.3)
+                
+                elif variable=={x}: # 1D plot
+                    f = sp.lambdify(x, expr, 'numpy')
+                    X = np.linspace(max(1e-12,a), b, nn)
+                    Y = f(X)
+                    ax.plot(X, Y, color=self.theme["accent_color"])
+                    ax.fill_between(X, Y, color=self.theme['accent_color'], alpha=0.3)
+
+                else:
+                    messagebox.showinfo("Info", "Plotting only supported for expressions with x.")
+                    plt.close(fig)
+                    return
+
+                # --- Style the plot axes and labels ---
+                ax.set_xlabel('x')
+                ax.tick_params(axis='x', colors=self.theme["fg"])
+                ax.tick_params(axis='y', colors=self.theme["fg"])
+                ax.xaxis.label.set_color(self.theme["fg"])
+                ax.yaxis.label.set_color(self.theme["fg"])
+                ax.title.set_color(self.theme["fg"])
+                ax.spines['bottom'].set_color(self.theme["fg"])
+                ax.spines['top'].set_color(self.theme["fg"])
+                ax.spines['left'].set_color(self.theme["fg"])
+                ax.spines['right'].set_color(self.theme["fg"])
+                ax.grid(True, color=self.theme["btn_bg"], linestyle='--', linewidth=0.5)
+
+
+                buf2 = BytesIO()
+                plt.savefig(buf2, format='png', facecolor=fig.get_facecolor(), dpi=100, bbox_inches='tight', pad_inches=0.1)
                 plt.close(fig)
-                return
-
-            # --- Style the plot axes and labels ---
-            ax.set_xlabel('x')
-            ax.tick_params(axis='x', colors=self.theme["fg"])
-            ax.tick_params(axis='y', colors=self.theme["fg"])
-            ax.xaxis.label.set_color(self.theme["fg"])
-            ax.yaxis.label.set_color(self.theme["fg"])
-            ax.title.set_color(self.theme["fg"])
-            ax.spines['bottom'].set_color(self.theme["fg"])
-            ax.spines['top'].set_color(self.theme["fg"])
-            ax.spines['left'].set_color(self.theme["fg"])
-            ax.spines['right'].set_color(self.theme["fg"])
-            ax.grid(True, color=self.theme["btn_bg"], linestyle='--', linewidth=0.5)
-
-
-            buf2 = BytesIO()
-            plt.savefig(buf2, format='png', facecolor=fig.get_facecolor(), dpi=100, bbox_inches='tight', pad_inches=0.1)
-            plt.close(fig)
-            buf2.seek(0)
-            
-            img = Image.open(buf2)
-            photo = ImageTk.PhotoImage(img)
-            self.plot.config(text="",image=photo)
-            self.plot.image = photo
-            self.simplified = True
+                buf2.seek(0)
+                
+                img = Image.open(buf2)
+                photo = ImageTk.PhotoImage(img)
+                self.plot.config(text="",image=photo)
+                self.plot.image = photo
+                self.simplified = True
+            except:
+                self.plot.config(text="f(x) cannot be Plotted")
         except Exception as e:
-            messagebox.showerror("Plotting Error", f"An error occurred while plotting:\n{e}")
+            messagebox.showerror("Error", f"An error occurred while plotting:\n{e}")
+
 
     def eval_expr(self): 
-        if not hasattr(self, "expr"): messagebox.showerror("Simplify", f"Simplify the function first:") ;return
+        if not hasattr(self, "expr") or not self.simplified: messagebox.showerror("Simplify", f"Simplify the function first:") ;return
         try: self.simp_expr() 
         except Exception as e: return
         try:
-            transformations = standard_transformations + (implicit_multiplication_application,)
-            local_dict = {
-                'ceil': sp.ceiling,
-                'nPr': self.nPr,
-                'nCr':sp.binomial,
-                'e': sp.E,           
-                'π': sp.pi,
-                'sin': sp.sin,
-                'cos': sp.cos,
-                'tan': sp.tan,
-                'cot': sp.cot,
-                'sec': sp.sec,
-                'csc': sp.csc,
-                'ln': sp.ln,
-                'sqrt': sp.sqrt
-            }
+            
             a = float(self.a_val.get())
             b = float(self.b_val.get())
+
+            a,b = sorted([a,b])
             expr = self.expr
-            expr_str = f"integrate({expr}, (x, {a}, {b}))"
-            new_expr = parse_expr(expr_str, transformations=transformations, local_dict=local_dict)
-            ACTUAL = new_expr.evalf()
-            latex_str = f"$\\int_{{{round(a,2):.2f}}}^{{{round(b,2):.2f}}} f(x) = {round(ACTUAL,2):.2f}$"
+            x = sp.symbols('x')
+            try:
+                z = sp.integrate(expr, (x, a, b))
+                if sp.im(z): ACTUAL = sp.integrate(expr, (x, 0, b)) if b > 0 else 0
+                else: ACTUAL = sp.re(z)
+                latex_str = f"$\\int_{{{round(a,2):.2f}}}^{{{round(b,2):.2f}}} f(x) = {round(ACTUAL,2):.2f}$"
+            except Exception as e:
+                print(e)
+                latex_str = f"$\\text{{f(x) cannot be integrated}}$"
 
             fig, ax = plt.subplots()
             ax.text(0.5,0.5, latex_str, fontsize=15, ha='center', va='center', color=self.theme["fg"])
@@ -601,68 +606,86 @@ class App:
         n = int(self.n_val.get())
         a_val = float(self.a_val.get())
         b_val = float(self.b_val.get())
+        a_val,b_val = sorted([a_val,b_val])
 
-        # Simpson's 3/8 rule requires n to be a multiple of 3
+        # Simpson's 3/8 rule requires n to be multiple of 3
         if n % 3 != 0:
             n += 3 - (n % 3)
             self.n_val.set(str(n))
-        # Simpson's 1/3 rule requires n to be even
-        if n % 2 == 1:
-            self.n_val.set(str(n+1))
-            n += 1
 
         x = sp.symbols('x')
         expr = self.expr
-
-        def y(val):
-            return expr.subs(x, val).evalf()
+        y = self.safe_eval_y(expr, x)
 
         h = (b_val - a_val) / n
-        sum_ = y(a_val) + y(b_val)
+        X = [a_val + i * h for i in range(n + 1)]
+        Y = [y(xi) for xi in X]
 
-        for i in range(1, n):
-            xi = a_val + i * h
-            # Coefficients: 3 for non-multiples of 3, 2 for multiples of 3
-            weight = 3 if i % 3 != 0 else 2
-            sum_ += weight * y(xi)
+        if any(np.isnan(yi) for yi in Y):
+            # messagebox.showwarning("Domain Warning",
+                # "Some f(x) values were undefined (NaN/complex). They were replaced with 0.")
+            Y = [0 if np.isnan(yi) else yi for yi in Y]
 
-        integral = (3 * h / 8) * sum_
+        integral = (3 * h / 8) * (
+            Y[0] + Y[-1] +
+            3 * sum(Y[i] for i in range(1, n) if i % 3 != 0) +
+            2 * sum(Y[i] for i in range(3, n - 2, 3))
+        )
+
         return integral
 
-    
+
+    def safe_eval_y(self, expr, x_symbol):
+        def y(val):
+            try:
+                val = float(val)
+                if "log" in str(expr) and val <= 0:
+                    return np.nan
+                if "sqrt" in str(expr) and val < 0:
+                    return np.nan
+                yval = expr.subs(x_symbol, val).evalf()
+                if yval.is_real is False or np.isnan(float(yval)):
+                    return np.nan
+                return float(yval)
+            except Exception:
+                return np.nan
+        return y
+
+
     def simpsons1(self):
         n = int(self.n_val.get())
         a_val = float(self.a_val.get())
         b_val = float(self.b_val.get())
+        a_val,b_val = sorted([a_val,b_val])
 
-        # Simpson's 3/8 rule requires n to be a multiple of 3
-        if n % 3 != 0:
-            n += 3 - (n % 3)
-            self.n_val.set(str(n))
-        # Simpson's 1/3 rule requires n to be even
         if n % 2 == 1:
-            self.n_val.set(str(n+1))
             n += 1
+            self.n_val.set(str(n))
 
         x = sp.symbols('x')
         expr = self.expr
-
-        def y(val):
-            return expr.subs(x, val).evalf()
+        y = self.safe_eval_y(expr, x)  # use safe evaluation
 
         h = (b_val - a_val) / n
-        sum_ = y(a_val) + y(b_val)
+        X = [a_val + i * h for i in range(n + 1)]
+        Y = [y(xi) for xi in X]
 
-        for i in range(1, n):
-            xi = a_val + i*h
-            weight = 4 if i % 2 == 1 else 2
-            sum_ += weight * y(xi)
+        if any(np.isnan(yi) for yi in Y):
+            # messagebox.showwarning("Domain Warning",
+            #     "Some f(x) values are invalid (NaN/undefined). They are replaced with 0.")
+            Y = [0 if np.isnan(yi) else yi for yi in Y]
 
-        integral = (h/3) * sum_
+        integral = (h/3) * (Y[0] + Y[-1] + 4 * sum(Y[i] for i in range(1, n, 2)) + 2 * sum(Y[i] for i in range(2, n-1, 2)))
         return integral
 
+ 
     def nPr(self, n, r):
         return factorial(n) / factorial(n - r)
+    
+    def record_history(self, event):
+        current = self.expression.get()
+        if not self.history or self.history[-1] != current:
+            self.history.append(current)
     
     def clear(self):
         self.history.append(self.expression.get())
@@ -675,13 +698,18 @@ class App:
         self.simplify_lbl.config(image="")   
         self.simpsons_lbl.config(image="")
 
+        self.expression.focus_set()
         self.evaluated = False
         self.simplified = False
+
+    def help(self):
+        pass
 
     def btn_clicked(self, k):
         if k == "Evaluate": self.eval_expr();return
         elif k == "Simplify": self.simp_expr();return
         elif k == "Undo": self.undo(); return
+        elif k == "Help": self.help(); return
         elif k == "Clear": self.clear(); return
         
         i = 1

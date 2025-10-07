@@ -7,6 +7,13 @@ It provides an interactive interface for entering mathematical expressions, simp
 
 ---
 
+## Preview
+
+#### *Simpson’s Integration Simulator in action:*
+![](imgs/cover.png)
+
+---
+
 ## Features
 
 - **Evaluate mathematical expressions** involving `x`
@@ -112,13 +119,6 @@ Simpsons-Integration-Rules/
 | **numpy** | Numerical calculations |
 | **sympy** | Symbolic computation and integration |
 | **markdown** | Converts help text into HTML |
-
----
-
-## Preview
-
-#### *Simpson’s Integration Simulator in action:*
-![](imgs/cover.png)
 
 ---
 

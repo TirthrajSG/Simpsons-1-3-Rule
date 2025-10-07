@@ -1,4 +1,4 @@
-# <img src="imgs/icon.png" alt="emoji" width="20" height="20"> Simpson’s Integration Simulator
+# <img src="imgs/icon.png" alt="emoji" width="32" height="32"> Simpson’s Integration Simulator
 
 
 

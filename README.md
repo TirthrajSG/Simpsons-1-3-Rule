@@ -1,6 +1,6 @@
 <img src="imgs/icon.png" alt="emoji" width="20" height="20">
-
 # Simpson’s Integration Simulator
+
 
 **Simpson’s Integration Simulator** is a Python GUI application built with **Tkinter** that lets you **compute and visualize numerical integration** using **Simpson’s 1/3 rule** and **Simpson’s 3/8 rule**.  
 It provides an interactive interface for entering mathematical expressions, simplifying them symbolically, and plotting both **exact** and **approximate** integral results.

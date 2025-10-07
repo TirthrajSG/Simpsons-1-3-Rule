@@ -1,3 +1,5 @@
+<img src="imgs/icon.png" alt="emoji" width="20" height="20">
+
 # Simpson’s Integration Simulator
 
 **Simpson’s Integration Simulator** is a Python GUI application built with **Tkinter** that lets you **compute and visualize numerical integration** using **Simpson’s 1/3 rule** and **Simpson’s 3/8 rule**.  
@@ -27,7 +29,6 @@ It provides an interactive interface for entering mathematical expressions, simp
 | **Trigonometric** | `sin(x)`, `cos(x)`, `tan(x)`, `csc(x)`, `sec(x)`, `cot(x)` |
 | **Inverse Trigonometric** | `asin(x)`, `acos(x)`, `atan(x)`, `acsc(x)`, `asec(x)`, `acot(x)` |
 | **Exponential & Logarithmic** | `e`, `π`, `ln(x)`, `log(x)`, `sqrt(x)`, `root(x, n)` |
-| **Combinatorics** | `nPr(n, r)`, `nCr(n, r)`, `lcm(a, b)`, `gcd(a, b)` |
 | **Calculus** | `diff(f, x)`, `limit(f, x, a)`, `integ(f, x)`, `Sum(expr, (x, a, b))`, `Prod(expr, (x, a, b))` |
 
 ---
@@ -89,12 +90,14 @@ python main.py
 ## Project Structure
 ```
 Simpsons-Integration-Rules/
-├── main.py                
-├── theme.py               
-├── imgs/                  
-├── help.md                
-├── requirements.txt
-└── README.md
+├── main.py                # Main Tkinter GUI application
+├── theme.py               # Theme definitions for GUI (colors, fonts, etc.)
+├── imgs/                  # Images used in the app and markdown files
+│   ├── cover.png          # Cover image for the README.md
+│   ├── icon.ico           # Icon for the Tkinter window
+├── help.md                # Markdown file with app instructions or help
+├── requirements.txt       # Python dependencies
+└── README.md              # Project overview and instructions
 ```
 
 ---
